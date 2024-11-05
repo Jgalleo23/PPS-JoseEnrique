@@ -46,30 +46,30 @@ alta() {
     # Validar el nombre
     while true; do
         read -p "Nombre: " nombre
-        if [[ "$nombre" =~ ^[a-zA-Z]+$ ]]; then
+        if [[ "$nombre" =~ ^[[:alpha:][:space:]]+$ ]]; then
             break
         else
-            echo "El nombre solo debe contener letras. Inténtalo de nuevo."
+            echo "El nombre no debe contener números. Inténtalo de nuevo."
         fi
     done
     
     # Validar el primer apellido
     while true; do
         read -p "Apellido 1: " apellido1
-        if [[ "$apellido1" =~ ^[a-zA-Z]+$ ]]; then
+        if [[ "$apellido1" =~ ^[[:alpha:][:space:]]+$ ]]; then
             break
         else
-            echo "El primer apellido solo debe contener letras. Inténtalo de nuevo."
+            echo "El primer apellido no debe contener números. Inténtalo de nuevo."
         fi
     done
 
     # Validar el segundo apellido
     while true; do
         read -p "Apellido 2: " apellido2
-        if [[ "$apellido2" =~ ^[a-zA-Z]+$ ]]; then
+        if [[ "$apellido2" =~ ^[[:alpha:][:space:]]+$ ]]; then
             break
         else
-            echo "El segundo apellido solo debe contener letras. Inténtalo de nuevo."
+            echo "El segundo apellido no debe contener números. Inténtalo de nuevo."
         fi
     done
 
@@ -94,6 +94,7 @@ alta() {
     fi
     sleep 1.5
 }
+
 
 # Función para dar de baja a un usuario
 baja() {
@@ -166,4 +167,3 @@ while true; do
         *) echo "Opción no válida. Intente de nuevo." ;;
     esac
 done
-
