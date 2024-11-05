@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Nombre del archivo: AE1.3_Gallego_Leon_Jose_Enrique.sh
 # Script para gestión de usuarios y copias de seguridad
 
 # Verificación de existencia del archivo usuarios.csv
