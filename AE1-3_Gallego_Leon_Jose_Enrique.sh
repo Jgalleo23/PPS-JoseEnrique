@@ -30,6 +30,35 @@ menu() {
 
 # Función de copia de seguridad
 copia() {
+    # Verificar si zip está instalado
+    if ! command -v zip &> /dev/null; then
+        echo "No está instalado zip. Debe instalarlo para continuar. ¿Desea instalarlo? (Y/N)"
+        read -p "Seleccione una opción: " instalar_zip
+        case $instalar_zip in
+            [Yy]* )
+                # Intentar instalar zip (funciona en sistemas con apt, puedes cambiar por el gestor de paquetes adecuado)
+                if command -v apt &> /dev/null; then
+                    sudo apt update && sudo apt install zip -y
+                elif command -v yum &> /dev/null; then
+                    sudo yum install zip -y
+                else
+                    echo "No se puede instalar zip automáticamente. Inténtelo manualmente."
+                    return
+                fi
+                ;;
+            [Nn]* )
+                echo "No se realizará la copia de seguridad."
+                return
+                ;;
+            * )
+                echo "Opción no válida. No se realizará la copia de seguridad."
+                return
+                ;;
+        esac
+    else
+        echo "Zip instalado, realizando la copia..."
+    fi
+
     backup_name="copia_usuarios_$(date +'%d%m%Y_%H-%M-%S').zip"
     zip "$backup_name" usuarios.csv
     # Limita a las dos copias de seguridad más recientes
@@ -40,6 +69,7 @@ copia() {
     echo "Copia de seguridad realizada: $backup_name" >> log.log
     sleep 1.5
 }
+
 
 # Función para dar de alta a un usuario
 alta() {
@@ -99,8 +129,11 @@ alta() {
 # Función para dar de baja a un usuario
 baja() {
     read -p "Nombre de usuario a eliminar: " nombre_usuario
-    if grep -q "$nombre_usuario" usuarios.csv; then
-        grep -v "$nombre_usuario" usuarios.csv > temp.csv && mv temp.csv usuarios.csv
+
+    # Verificar si el usuario existe en el archivo
+    if grep -q ":$nombre_usuario$" "usuarios.csv"; then
+        # Usamos sed para eliminar la línea exacta que contiene al usuario
+        sed -i.bak "/:$nombre_usuario$/d" "usuarios.csv"
         echo "BORRADO $nombre_usuario el $(date +'%d/%m/%Y a las %H:%M')" >> log.log
         echo "Usuario eliminado: $nombre_usuario"
     else
@@ -108,6 +141,7 @@ baja() {
     fi
     sleep 1.5
 }
+
 
 # Función para mostrar usuarios
 mostrar_usuarios() {
